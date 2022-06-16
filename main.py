@@ -6,9 +6,10 @@ import requests
 import os
 
 # 书写你的cookie
-cookie = 'JSESSIONID=; route=7ad5990112b62fc480c2b0c25f7f9b70'
+cookie = 'JSESSIONID=49752FE719E9B9401CD1F0EABF3A5CDC; route=6db69d195f41a086888368aa6174353b'
 # 书写教学综合信息服务平台的域名，我们学校的是http://jw.xxxxx.edu.cn:8111
-domain = 'http://jw..edu.cn:8111'
+domain = 'http://jw..edu.cn:8111/'
+
 
 try:
     os.mkdir('pdf')
@@ -26,7 +27,7 @@ def query(stuID: int, **kwargs) -> bool:
     :return: 返回是否查询成功
     """
     headers = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/101.0.4951.54",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.41",
         'cookie': cookie
     }
     url = domain + '/bysxxcx/xscjzbdy_dyZgkydxList.html?gnmkdm=N558020&su={}'
@@ -41,14 +42,13 @@ def query(stuID: int, **kwargs) -> bool:
     # 拼接url
     url = url.format(stuID)
     res = requests.post(url=url, data=data, headers=headers).text
-    print(res)
     if res.find('成功') != -1:
         # 20105010550.pdf
         downloadName = res.split('_')[1].split('#')[0]
 
         url = '{}/templete/scorePrint/score_{}'.format(domain, downloadName)
 
-        fileBlob = requests.get(url, headers).content
+        fileBlob = requests.get(url, headers=headers).content
         with open('{}.pdf'.format(stuID), 'wb+') as f:
             f.write(fileBlob)
             print('写入成功')
@@ -56,9 +56,6 @@ def query(stuID: int, **kwargs) -> bool:
         print('获取成绩出错', url, res)
         return False
 
-print('好用别忘记给个star')
-print()
-print()
 
 while True:
     print('选择功能：')
@@ -83,5 +80,5 @@ while True:
         # 循环查询
         for id in range(start, end):
             print('当前查询的学号为', id)
-            time.sleep(4)
+            time.sleep(2)
             query(stuID=id)
