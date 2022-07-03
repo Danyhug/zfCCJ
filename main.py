@@ -6,9 +6,9 @@ import requests
 import os
 
 # 书写你的cookie
-cookie = 'JSESSIONID=49752FE719E9B9401CD1F0EABF3A5CDC; route=6db69d195f41a086888368aa6174353b'
+cookie = 'JSESSIONID=02966A21104F0F675BB3FD7DAB82A1D0; route=f6e54f9519cad90660e0237650d0f980'
 # 书写教学综合信息服务平台的域名，我们学校的是http://jw.xxxxx.edu.cn:8111
-domain = 'http://jw..edu.cn:8111/'
+domain = 'http://jw.tsgzy.edu.cn:8111/'
 
 
 try:
@@ -44,10 +44,10 @@ def query(stuID: int, **kwargs) -> bool:
     res = requests.post(url=url, data=data, headers=headers).text
     if res.find('成功') != -1:
         # 20105010550.pdf
-        downloadName = res.split('_')[1].split('#')[0]
+        tempname = res.split('\\')
+        downloadName = tempname[1] + tempname[2] + tempname[3].split('#')[0]
 
-        url = '{}/templete/scorePrint/score_{}'.format(domain, downloadName)
-
+        url = '{}{}'.format(domain, downloadName)
         fileBlob = requests.get(url, headers=headers).content
         with open('{}.pdf'.format(stuID), 'wb+') as f:
             f.write(fileBlob)
